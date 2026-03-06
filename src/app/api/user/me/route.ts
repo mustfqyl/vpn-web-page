@@ -144,3 +144,57 @@ export async function GET() {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }
+
+export async function DELETE() {
+    try {
+        const cookieStore = await cookies()
+        const token = cookieStore.get('token')?.value
+
+        if (!token) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
+
+        const decoded = verifyToken(token) as { userId: string } | null
+        if (!decoded || !decoded.userId) {
+            return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+        }
+
+        const { userId } = decoded
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId }
+        })
+
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 })
+        }
+
+        // Delete from PasarGuard if exists
+        if (user.pasarguardId) {
+            const deletedFromPanel = await pasarguardService.deleteUser(user.pasarguardId)
+            if (!deletedFromPanel) {
+                console.warn(`Attempted to delete user ${user.pasarguardId} from panel, but it failed or user was already gone.`);
+                // We still proceed to delete the local DB record to not leave them in a broken state.
+            }
+        }
+
+        // Delete from local DB. Cascade rules (if defined in Prisma schema) will delete related data (subscriptions, devices, login_codes).
+        // If no cascade rules defined, this might throw if foreign keys exist. Let's do a transaction to be safe or just rely on Prisma.
+        // The schema shows: 
+        //   user: User @relation(fields: [userId], references: [id], onDelete: Cascade)
+        // So `prisma.user.delete` will automatically cascade and delete devices, login codes, and subscriptions.
+
+        await prisma.user.delete({
+            where: { id: userId }
+        })
+
+        // Clear session cookie
+        cookieStore.delete('token')
+
+        return NextResponse.json({ success: true })
+
+    } catch (error) {
+        console.error("Account deletion error:", error)
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    }
+}

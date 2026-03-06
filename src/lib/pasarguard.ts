@@ -273,6 +273,25 @@ export const pasarguardService = {
     },
 
     /**
+     * Delete user from PasarGuard Panel.
+     * DELETE /api/user/{username}
+     */
+    async deleteUser(username: string): Promise<boolean> {
+        if (PASARGUARD_URL.includes('example.com')) return true
+
+        try {
+            const res = await apiRequest(`/api/user/${encodeURIComponent(username)}`, {
+                method: 'DELETE'
+            })
+
+            return res.ok
+        } catch (error) {
+            console.error('PasarGuard Delete User Error:', error)
+            return false
+        }
+    },
+
+    /**
      * Update user in PasarGuard Panel.
      * PUT /api/user/{username}
      */

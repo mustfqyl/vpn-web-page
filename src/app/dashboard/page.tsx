@@ -62,6 +62,8 @@ export default function DashboardPage() {
     const [selectedNode, setSelectedNode] = useState<ServerNode | null>(null);
     const [loading, setLoading] = useState(true);
     const [copySuccess, setCopySuccess] = useState(false);
+    const [deleteConfirmation, setDeleteConfirmation] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
     const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
@@ -152,6 +154,25 @@ export default function DashboardPage() {
     const handleLogout = async () => {
         await fetch("/api/auth/logout", { method: "POST" });
         window.location.href = "/";
+    };
+
+    const handleDeleteAccount = async () => {
+        if (deleteConfirmation !== "HESABIMI SİL") return;
+
+        setIsDeleting(true);
+        try {
+            const res = await fetch("/api/user/me", { method: "DELETE" });
+            if (res.ok) {
+                window.location.href = "/";
+            } else {
+                alert("Hesap silinirken bir hata oluştu.");
+                setIsDeleting(false);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Hesap silinirken bir hata oluştu.");
+            setIsDeleting(false);
+        }
     };
 
     if (loading) {
@@ -457,6 +478,71 @@ export default function DashboardPage() {
                         <Link href="/contact" className="card" style={{ padding: "1rem", textAlign: "center", transition: "all 0.2s ease" }}>
                             <div style={{ fontSize: "0.6875rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--foreground-muted)" }}>Support</div>
                         </Link>
+                    </div>
+
+                    {/* Danger Zone */}
+                    <div className="card" style={{
+                        marginTop: "3rem",
+                        padding: "2rem",
+                        border: "1px solid rgba(239, 68, 68, 0.3)",
+                        background: "rgba(239, 68, 68, 0.05)",
+                        borderRadius: "16px"
+                    }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                            <h3 style={{ fontSize: "1.25rem", color: "var(--error)", fontWeight: 700 }}>Tehlikeli Bölge</h3>
+                        </div>
+
+                        <div style={{ fontSize: "0.875rem", color: "var(--foreground)", lineHeight: "1.6", marginBottom: "1.5rem" }}>
+                            <p style={{ marginBottom: "0.5rem" }}>Hesabınızı kalıcı olarak silmek üzeresiniz. Lütfen aşağıdaki uyarıları dikkatle okuyunuz:</p>
+                            <ul style={{ paddingLeft: "1.5rem", color: "var(--foreground-muted)", marginBottom: "1rem" }}>
+                                <li><strong>Tüm verileriniz (cihazlar, abonelik geçmişi ve hesabınız) geri dönüşü olmayacak şekilde tamamen yok edilecektir.</strong></li>
+                                <li><strong>Ödediğiniz ücret ile almış olduğunuz aktif aboneliğin kalan süresi anında iptal edilecek ve kesinlikle <u>ücret iadesi yapılmayacaktır</u>.</strong></li>
+                            </ul>
+                            <p>Bu işlemin geri dönüşü yoktur. Devam etmek istediğinize eminseniz, lütfen aşağıdaki alana <strong style={{ color: "var(--error)" }}>HESABIMI SİL</strong> yazınız.</p>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}>
+                            <input
+                                type="text"
+                                placeholder="HESABIMI SİL"
+                                value={deleteConfirmation}
+                                onChange={(e) => setDeleteConfirmation(e.target.value)}
+                                style={{
+                                    width: "100%",
+                                    padding: "0.75rem 1rem",
+                                    borderRadius: "8px",
+                                    border: "1px solid var(--card-border)",
+                                    background: "var(--background)",
+                                    color: "var(--foreground)",
+                                    fontSize: "0.875rem",
+                                    outline: "none",
+                                    transition: "all 0.2s"
+                                }}
+                            />
+
+                            <button
+                                onClick={handleDeleteAccount}
+                                disabled={deleteConfirmation !== "HESABIMI SİL" || isDeleting}
+                                style={{
+                                    padding: "0.75rem 1.5rem",
+                                    borderRadius: "8px",
+                                    fontSize: "0.875rem",
+                                    fontWeight: 700,
+                                    border: "none",
+                                    cursor: deleteConfirmation === "HESABIMI SİL" && !isDeleting ? "pointer" : "not-allowed",
+                                    background: deleteConfirmation === "HESABIMI SİL" ? "var(--error)" : "var(--accent-soft)",
+                                    color: deleteConfirmation === "HESABIMI SİL" ? "white" : "var(--foreground-muted)",
+                                    transition: "all 0.3s"
+                                }}
+                            >
+                                {isDeleting ? "Siliniyor..." : "Hesabımı Kalıcı Olarak Sil"}
+                            </button>
+                        </div>
                     </div>
 
                 </div>
