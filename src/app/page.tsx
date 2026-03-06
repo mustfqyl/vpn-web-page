@@ -143,15 +143,15 @@ export default function HomePage() {
                 <div className="nav-dropdown-content">
                   <Link href="/download/apple" className="dropdown-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 1.44S8.22 5 6 5a4.91 4.91 0 0 0-5 4.78c0 4.22 3 12.22 6 12.22 1.25 0 2.5-1.06 4-1.06Z" /><path d="M12 5a3 3 0 0 0 2-4c-2 0-4 3-4 4Z" /></svg>
-                    Apple Client
+                    Apple
                   </Link>
                   <Link href="/download/windows" className="dropdown-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6v12l7 1.5V4.5L4 6Z" /><path d="M13 19.5l7 1.5V3l-7 1.5v15Z" /></svg>
-                    Windows Client
+                    Windows
                   </Link>
                   <Link href="/download/android" className="dropdown-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5.5 2 3.5 4.5" /><path d="M18.5 2l2 2.5" /><path d="M3 15h18" /><path d="M5 21v-3" /><path d="M19 21v-3" /><path d="M16 11V7a4 4 0 0 0-8 0v4" /><path d="M4 11h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1Z" /></svg>
-                    Android Client
+                    Android
                   </Link>
                 </div>
               </div>
