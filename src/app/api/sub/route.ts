@@ -57,7 +57,7 @@ export async function GET(request: Request) {
                 }
             })
 
-        } catch (pError) {
+        } catch {
             return new NextResponse('Failed to fetch subscription content', { status: 502 })
         }
 

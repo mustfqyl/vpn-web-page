@@ -4,10 +4,9 @@ import Link from "next/link";
 import { BLOG_POSTS } from "@/data/blog-posts";
 import { useTheme } from "@/context/ThemeContext";
 
-export default function BlogIndexPage() {
+const ThemeSwitcher = () => {
     const { theme, toggleTheme, mounted } = useTheme();
-
-    const ThemeSwitcher = () => (
+    return (
         <button
             onClick={toggleTheme}
             className="theme-toggle-btn active"
@@ -34,6 +33,10 @@ export default function BlogIndexPage() {
             )}
         </button>
     );
+};
+
+export default function BlogIndexPage() {
+
 
     return (
         <div style={{ minHeight: "100vh", position: "relative" }}>

@@ -21,13 +21,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const savedTheme = localStorage.getItem("theme") as Theme | null;
         const systemTheme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 
-        if (savedTheme) {
-            setThemeState(savedTheme);
-        } else {
-            setThemeState(systemTheme);
-        }
-
-        setMounted(true);
+        setTimeout(() => {
+            if (savedTheme) {
+                setThemeState(savedTheme);
+            } else {
+                setThemeState(systemTheme);
+            }
+            setMounted(true);
+        }, 0);
     }, []);
 
     useEffect(() => {

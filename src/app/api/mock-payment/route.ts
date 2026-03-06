@@ -60,7 +60,7 @@ export async function POST() {
                 let groupIds: number[] | undefined
                 if (groupsRes.ok) {
                     const gData = await groupsRes.json()
-                    const match = (gData.groups || []).find((g: any) => g.name.toLowerCase() === 'user')
+                    const match = (gData.groups || []).find((g: { id: number; name: string }) => g.name.toLowerCase() === 'user')
                     if (match) groupIds = [match.id]
                 }
                 await pasarguardService.updateUser(user.pasarguardId, {

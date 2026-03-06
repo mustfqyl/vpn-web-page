@@ -130,7 +130,7 @@ async function resolveGroupId(name: string): Promise<number | null> {
         if (!res.ok) return null
         const data = await res.json()
         const groups = data.groups || []
-        const match = groups.find((g: any) => g.name.toLowerCase() === name.toLowerCase())
+        const match = groups.find((g: { id: number; name: string }) => g.name.toLowerCase() === name.toLowerCase())
         return match ? match.id : null
     } catch {
         return null

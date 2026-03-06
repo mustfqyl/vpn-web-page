@@ -25,7 +25,7 @@ export async function proxy(request: NextRequest) {
             await jwtVerify(token, key)
             // Token is valid
             return NextResponse.next()
-        } catch (error) {
+        } catch {
             // Token is invalid
             if (request.nextUrl.pathname.startsWith('/api')) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

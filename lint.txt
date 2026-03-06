@@ -1,0 +1,161 @@
+
+> customer-portal@0.1.0 lint
+> eslint
+
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/api/auth/login/route.ts
+  65:27  warning  '_' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/api/auth/register/route.ts
+  90:27  warning  '_' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/api/device/login/route.ts
+  3:10  warning  'comparePassword' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/api/mock-payment/route.ts
+  63:65  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/api/server/status/route.ts
+  59:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  66:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  69:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/api/sub/route.ts
+  60:18  warning  'pError' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/auth/login/page.tsx
+   4:20  warning  'useEffect' is defined but never used             @typescript-eslint/no-unused-vars
+  14:13  warning  'theme' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  14:20  warning  'toggleTheme' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/auth/register/page.tsx
+  4:20  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/billing/page.tsx
+  4:20  warning  'useEffect' is defined but never used             @typescript-eslint/no-unused-vars
+  8:13  warning  'theme' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  8:20  warning  'toggleTheme' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/blog/[slug]/page.tsx
+   80:22  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/blog/[slug]/page.tsx:80:22
+  78 |                         </div>
+  79 |                     </Link>
+> 80 |                     <ThemeSwitcher />
+     |                      ^^^^^^^^^^^^^ This component is created during render
+  81 |                 </div>
+  82 |             </header>
+  83 |
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/blog/[slug]/page.tsx:21:27
+  19 |     }
+  20 |
+> 21 |     const ThemeSwitcher = () => (
+     |                           ^^^^^^^
+> 22 |         <button
+     | ^^^^^^^^^^^^^^^
+> 23 |             onClick={toggleTheme}
+     …
+     | ^^^^^^^^^^^^^^^
+> 46 |         </button>
+     | ^^^^^^^^^^^^^^^
+> 47 |     );
+     | ^^^^^^ The component is created during render here
+  48 |
+  49 |     return (
+  50 |         <div style={{ minHeight: "100vh", position: "relative" }}>  react-hooks/static-components
+  142:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  143:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  144:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  145:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  146:35  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  147:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  148:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  149:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  150:40  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  151:36  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  152:35  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  153:44  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  154:38  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  155:37  warning  'node' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/blog/page.tsx
+  69:22  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/blog/page.tsx:69:22
+  67 |                         </div>
+  68 |                     </Link>
+> 69 |                     <ThemeSwitcher />
+     |                      ^^^^^^^^^^^^^ This component is created during render
+  70 |                 </div>
+  71 |             </header>
+  72 |
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/blog/page.tsx:10:27
+   8 |     const { theme, toggleTheme, mounted } = useTheme();
+   9 |
+> 10 |     const ThemeSwitcher = () => (
+     |                           ^^^^^^^
+> 11 |         <button
+     | ^^^^^^^^^^^^^^^
+> 12 |             onClick={toggleTheme}
+     …
+     | ^^^^^^^^^^^^^^^
+> 35 |         </button>
+     | ^^^^^^^^^^^^^^^
+> 36 |     );
+     | ^^^^^^ The component is created during render here
+  37 |
+  38 |     return (
+  39 |         <div style={{ minHeight: "100vh", position: "relative" }}>  react-hooks/static-components
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/contact/page.tsx
+  4:10  warning  'useState' is defined but never used              @typescript-eslint/no-unused-vars
+  4:20  warning  'useEffect' is defined but never used             @typescript-eslint/no-unused-vars
+  8:13  warning  'theme' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  8:20  warning  'toggleTheme' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/dashboard/page.tsx
+  78:13  warning  'theme' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  78:20  warning  'toggleTheme' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/app/page.tsx
+   12:18   warning  'toggleTheme' is assigned a value but never used                 @typescript-eslint/no-unused-vars
+  427:61   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  510:120  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  510:140  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/context/ThemeContext.tsx
+  25:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/context/ThemeContext.tsx:25:13
+  23 |
+  24 |         if (savedTheme) {
+> 25 |             setThemeState(savedTheme);
+     |             ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  26 |         } else {
+  27 |             setThemeState(systemTheme);
+  28 |         }  react-hooks/set-state-in-effect
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/lib/auth.ts
+  22:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/lib/pasarguard.ts
+  133:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/mustfq/Downloads/vpn-web-page-main/src/proxy.ts
+  28:18  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 45 problems (11 errors, 34 warnings)
+

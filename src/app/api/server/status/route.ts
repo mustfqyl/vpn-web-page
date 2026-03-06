@@ -56,17 +56,17 @@ export async function GET() {
         ])
 
         // Parse nodes and TCP ping each one individually
-        let nodes: any[] = []
+        let nodes: { name: string, address: string, port: number, status: string, message: string, ping: number, connectionType: string, xrayVersion: string, nodeVersion: string, uplinkGB: number, downlinkGB: number }[] = []
         if (nodesRes.status === 'fulfilled' && nodesRes.value.ok) {
             const data = await nodesRes.value.json()
             const nodeList = Array.isArray(data) ? data : (data.nodes || [])
 
             // TCP ping all nodes in parallel
             const pingResults = await Promise.all(
-                nodeList.map((n: any) => tcpPing(n.address || '0.0.0.0', n.port || 62050))
+                nodeList.map((n: { address?: string, port?: number }) => tcpPing(n.address || '0.0.0.0', n.port || 62050))
             )
 
-            nodes = nodeList.map((n: any, i: number) => ({
+            nodes = nodeList.map((n: { name?: string, address?: string, port?: number, status?: string, message?: string, connection_type?: string, xray_version?: string, node_version?: string, uplink?: number, downlink?: number }, i: number) => ({
                 name: n.name || 'Unknown',
                 address: n.address || '0.0.0.0',
                 port: n.port || 0,

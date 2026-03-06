@@ -19,7 +19,7 @@ export const generateToken = (payload: object, expiresIn: string | number = '1d'
 export const verifyToken = (token: string) => {
     try {
         return jwt.verify(token, JWT_SECRET)
-    } catch (error) {
+    } catch {
         return null
     }
 }

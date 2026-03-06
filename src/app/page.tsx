@@ -9,7 +9,7 @@ export default function HomePage() {
   const [mobileDownloadsOpen, setMobileDownloadsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     fetch('/api/user/me')
@@ -424,7 +424,7 @@ export default function HomePage() {
               Elegant Performance
             </h2>
             <p style={{ maxWidth: "550px", margin: "0 auto" }}>
-              Stripping away complexity to provide the world's most intuitive and powerful security infrastructure.
+              Stripping away complexity to provide the world&apos;s most intuitive and powerful security infrastructure.
             </p>
           </div>
 
@@ -507,7 +507,7 @@ export default function HomePage() {
               </div>
               <h3 style={{ fontSize: "1.75rem", fontWeight: 700, marginBottom: "1rem" }}>WireGuard®</h3>
               <p style={{ color: "var(--foreground-muted)", lineHeight: 1.7, marginBottom: "2rem" }}>
-                WireGuard is built for pure speed and reliability. It ensures your connection is always instant and won't drain your device's battery, making it the perfect choice for high-definition streaming, lag-free gaming, and everyday secure browsing.
+                WireGuard is built for pure speed and reliability. It ensures your connection is always instant and won&apos;t drain your device&apos;s battery, making it the perfect choice for high-definition streaming, lag-free gaming, and everyday secure browsing.
               </p>
               <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                 {[

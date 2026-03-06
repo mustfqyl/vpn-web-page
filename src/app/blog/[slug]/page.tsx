@@ -8,17 +8,9 @@ import { useTheme } from "@/context/ThemeContext";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = use(params);
-    const post = BLOG_POSTS.find((p) => p.slug === slug);
-
+const ThemeSwitcher = () => {
     const { theme, toggleTheme, mounted } = useTheme();
-
-    if (!post) {
-        notFound();
-    }
-
-    const ThemeSwitcher = () => (
+    return (
         <button
             onClick={toggleTheme}
             className="theme-toggle-btn active"
@@ -45,6 +37,15 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             )}
         </button>
     );
+};
+
+export default function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = use(params);
+    const post = BLOG_POSTS.find((p) => p.slug === slug);
+
+    if (!post) {
+        notFound();
+    }
 
     return (
         <div style={{ minHeight: "100vh", position: "relative" }}>
@@ -138,6 +139,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 <div className="blog-content">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         components={{
                             h1: ({ node, ...props }) => <h1 style={{ fontSize: "2.5rem", fontWeight: 700, marginBottom: "2rem", color: "var(--foreground)" }} {...props} />,
                             h2: ({ node, ...props }) => <h2 style={{ fontSize: "2rem", fontWeight: 600, marginBottom: "1.5rem", marginTop: "3rem", color: "var(--foreground)" }} {...props} />,

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { comparePassword } from '@/lib/auth'
 import crypto from 'crypto'
 import { z } from 'zod'
 

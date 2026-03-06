@@ -62,9 +62,9 @@ export async function POST(request: Request) {
         })
 
         // Remove sensitive data
-        const { password: _, ...userWithoutPassword } = user
+        delete (user as { password?: string }).password;
 
-        return NextResponse.json({ user: userWithoutPassword, token }, { status: 200 })
+        return NextResponse.json({ user, token }, { status: 200 })
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.issues }, { status: 400 })

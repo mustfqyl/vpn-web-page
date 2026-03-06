@@ -63,7 +63,7 @@ export async function POST(request: Request) {
             await prisma.subscription.create({
                 data: {
                     userId: user.id,
-                    planName: 'trial',
+                    planName: 'Trial',
                     expiresAt,
                     active: true,
                 }
@@ -87,11 +87,11 @@ export async function POST(request: Request) {
         })
 
         // Remove password from response
-        const { password: _, ...userWithoutPassword } = user
+        delete (user as { password?: string }).password;
 
         return NextResponse.json({
             user: {
-                ...userWithoutPassword,
+                ...user,
                 pasarguardId,
                 pasarguardSubUrl,
             },
