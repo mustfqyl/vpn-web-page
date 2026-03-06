@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error("Checkout error:", error);
         return NextResponse.json(
-            { error: "Ödeme sayfası oluşturulamadı" },
+            { error: "Could not create checkout session" },
             { status: 500 }
         );
     }

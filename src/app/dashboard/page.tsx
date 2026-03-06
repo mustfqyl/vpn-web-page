@@ -165,7 +165,7 @@ export default function DashboardPage() {
     };
 
     const handleDeleteAccount = async () => {
-        if (deleteConfirmation !== "HESABIMI SİL") return;
+        if (deleteConfirmation !== "DELETE MY ACCOUNT") return;
 
         setIsDeleting(true);
         try {
@@ -173,12 +173,12 @@ export default function DashboardPage() {
             if (res.ok) {
                 window.location.href = "/";
             } else {
-                alert("Hesap silinirken bir hata oluştu.");
+                alert("An error occurred while deleting the account.");
                 setIsDeleting(false);
             }
         } catch (error) {
             console.error(error);
-            alert("Hesap silinirken bir hata oluştu.");
+            alert("An error occurred while deleting the account.");
             setIsDeleting(false);
         }
     };
@@ -188,7 +188,7 @@ export default function DashboardPage() {
         setPasswordMessage({ type: "", text: "" });
 
         if (newPassword.length < 6) {
-            setPasswordMessage({ type: "error", text: "Yeni şifre en az 6 karakter olmalıdır." });
+            setPasswordMessage({ type: "error", text: "New password must be at least 6 characters long." });
             return;
         }
 
@@ -204,15 +204,15 @@ export default function DashboardPage() {
             const data = await res.json();
 
             if (res.ok) {
-                setPasswordMessage({ type: "success", text: "Şifreniz başarıyla değiştirildi." });
+                setPasswordMessage({ type: "success", text: "Password successfully updated." });
                 setCurrentPassword("");
                 setNewPassword("");
             } else {
-                setPasswordMessage({ type: "error", text: data.error || "Şifre değiştirilemedi." });
+                setPasswordMessage({ type: "error", text: data.error || "Password could not be updated." });
             }
         } catch (error) {
             console.error(error);
-            setPasswordMessage({ type: "error", text: "Bağlantı hatası oluştu." });
+            setPasswordMessage({ type: "error", text: "Connection error occurred." });
         } finally {
             setIsPasswordChanging(false);
         }
@@ -312,7 +312,7 @@ export default function DashboardPage() {
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
                             </svg>
-                            Profil Ayarları
+                            Profile Settings
                         </button>
                     </div>
 
@@ -580,7 +580,7 @@ export default function DashboardPage() {
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
-                                Profil Ayarları
+                                Profile Settings
                             </h2>
                             <button onClick={() => setIsProfileOpen(false)} style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: "0.5rem", borderRadius: "8px", transition: "background 0.2s" }} onMouseOver={e => e.currentTarget.style.background = 'var(--accent-soft)'} onMouseOut={e => e.currentTarget.style.background = 'none'}>
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -591,11 +591,11 @@ export default function DashboardPage() {
                             {/* User Info */}
                             <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
                                 <div>
-                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>E-Posta Adresi</div>
+                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Email Address</div>
                                     <div style={{ fontSize: "1rem", fontWeight: 500 }}>{user.email}</div>
                                 </div>
                                 <div>
-                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Üyelik Tarihi</div>
+                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Membership Date</div>
                                     <div style={{ fontSize: "1rem", fontWeight: 500 }}>
                                         {new Date(user.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
                                     </div>
@@ -606,14 +606,14 @@ export default function DashboardPage() {
                             <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "2rem", marginBottom: "2rem" }}>
                                 <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-                                    Şifre Değiştir
+                                    Change Password
                                 </h3>
 
                                 <form onSubmit={handleChangePassword} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                                     <div>
                                         <input
                                             type="password"
-                                            placeholder="Mevcut Şifre"
+                                            placeholder="Current Password"
                                             value={currentPassword}
                                             onChange={(e) => setCurrentPassword(e.target.value)}
                                             required
@@ -623,7 +623,7 @@ export default function DashboardPage() {
                                     <div>
                                         <input
                                             type="password"
-                                            placeholder="Yeni Şifre (En az 6 karakter)"
+                                            placeholder="New Password (Min 6 characters)"
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             required
@@ -644,7 +644,7 @@ export default function DashboardPage() {
                                         className="btn btn-primary"
                                         style={{ padding: "0.75rem", fontSize: "0.875rem", opacity: isPasswordChanging ? 0.7 : 1 }}
                                     >
-                                        {isPasswordChanging ? "Güncelleniyor..." : "Şifreyi Güncelle"}
+                                        {isPasswordChanging ? "Updating..." : "Update Password"}
                                     </button>
                                 </form>
                             </div>
@@ -663,18 +663,18 @@ export default function DashboardPage() {
                                         <line x1="12" y1="9" x2="12" y2="13" />
                                         <line x1="12" y1="17" x2="12.01" y2="17" />
                                     </svg>
-                                    <h3 style={{ fontSize: "1rem", color: "var(--error)", fontWeight: 700 }}>Tehlikeli Bölge</h3>
+                                    <h3 style={{ fontSize: "1rem", color: "var(--error)", fontWeight: 700 }}>Danger Zone</h3>
                                 </div>
 
                                 <div style={{ fontSize: "0.8125rem", color: "var(--foreground)", lineHeight: "1.5", marginBottom: "1.25rem" }}>
-                                    <p style={{ marginBottom: "0.5rem" }}>Bu işlem kalıcıdır ve geri alınamaz. Cihazlarınız, oturumlarınız ve mevcut aboneliğiniz temelli silinir. İade yapılmaz.</p>
-                                    <p>Onaylamak için <strong style={{ color: "var(--error)" }}>HESABIMI SİL</strong> yazın.</p>
+                                    <p style={{ marginBottom: "0.5rem" }}>This action is permanent and cannot be undone. Your devices, sessions, and current subscription will be permanently deleted. No refunds will be provided.</p>
+                                    <p>To confirm, type <strong style={{ color: "var(--error)" }}>DELETE MY ACCOUNT</strong>.</p>
                                 </div>
 
                                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                                     <input
                                         type="text"
-                                        placeholder="HESABIMI SİL"
+                                        placeholder="DELETE MY ACCOUNT"
                                         value={deleteConfirmation}
                                         onChange={(e) => setDeleteConfirmation(e.target.value)}
                                         style={{ width: "100%", padding: "0.6rem 1rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.875rem", outline: "none", transition: "all 0.2s" }}
@@ -682,10 +682,10 @@ export default function DashboardPage() {
 
                                     <button
                                         onClick={handleDeleteAccount}
-                                        disabled={deleteConfirmation !== "HESABIMI SİL" || isDeleting}
-                                        style={{ padding: "0.6rem 1rem", borderRadius: "8px", fontSize: "0.875rem", fontWeight: 700, border: "none", cursor: deleteConfirmation === "HESABIMI SİL" && !isDeleting ? "pointer" : "not-allowed", background: deleteConfirmation === "HESABIMI SİL" ? "var(--error)" : "var(--accent-soft)", color: deleteConfirmation === "HESABIMI SİL" ? "white" : "var(--foreground-muted)", transition: "all 0.3s" }}
+                                        disabled={deleteConfirmation !== "DELETE MY ACCOUNT" || isDeleting}
+                                        style={{ padding: "0.6rem 1rem", borderRadius: "8px", fontSize: "0.875rem", fontWeight: 700, border: "none", cursor: deleteConfirmation === "DELETE MY ACCOUNT" && !isDeleting ? "pointer" : "not-allowed", background: deleteConfirmation === "DELETE MY ACCOUNT" ? "var(--error)" : "var(--accent-soft)", color: deleteConfirmation === "DELETE MY ACCOUNT" ? "white" : "var(--foreground-muted)", transition: "all 0.3s" }}
                                     >
-                                        {isDeleting ? "Siliniyor..." : "Hesabımı Kalıcı Olarak Sil"}
+                                        {isDeleting ? "Deleting..." : "Permanently Delete Account"}
                                     </button>
                                 </div>
                             </div>
