@@ -68,7 +68,10 @@ export default function DashboardPage() {
     // Profile Modal States
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [currentPassword, setCurrentPassword] = useState("");
+    const [isCurrentPasswordVerified, setIsCurrentPasswordVerified] = useState(false);
+    const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
     const [newPassword, setNewPassword] = useState("");
+    const [confirmNewPassword, setConfirmNewPassword] = useState("");
     const [isPasswordChanging, setIsPasswordChanging] = useState(false);
     const [passwordMessage, setPasswordMessage] = useState({ type: "", text: "" });
 
@@ -183,12 +186,44 @@ export default function DashboardPage() {
         }
     };
 
+    const handleVerifyCurrentPassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setPasswordMessage({ type: "", text: "" });
+        setIsVerifyingPassword(true);
+
+        try {
+            const res = await fetch("/api/user/password/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ currentPassword })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setIsCurrentPasswordVerified(true);
+            } else {
+                setPasswordMessage({ type: "error", text: data.error || "Incorrect password." });
+            }
+        } catch (error) {
+            console.error(error);
+            setPasswordMessage({ type: "error", text: "Connection error occurred." });
+        } finally {
+            setIsVerifyingPassword(false);
+        }
+    };
+
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         setPasswordMessage({ type: "", text: "" });
 
         if (newPassword.length < 6) {
             setPasswordMessage({ type: "error", text: "New password must be at least 6 characters long." });
+            return;
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            setPasswordMessage({ type: "error", text: "New passwords do not match." });
             return;
         }
 
@@ -207,6 +242,8 @@ export default function DashboardPage() {
                 setPasswordMessage({ type: "success", text: "Password successfully updated." });
                 setCurrentPassword("");
                 setNewPassword("");
+                setConfirmNewPassword("");
+                setIsCurrentPasswordVerified(false);
             } else {
                 setPasswordMessage({ type: "error", text: data.error || "Password could not be updated." });
             }
@@ -564,18 +601,18 @@ export default function DashboardPage() {
                         border: "1px solid var(--card-border)",
                         borderRadius: "16px",
                         width: "100%",
-                        maxWidth: "500px",
+                        maxWidth: "400px",
                         maxHeight: "90vh",
                         overflowY: "auto",
                         animation: "fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
                         boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
                     }}>
                         <div style={{
-                            position: "sticky", top: 0, background: "var(--background)", zIndex: 10,
-                            padding: "1.5rem", borderBottom: "1px solid var(--card-border)",
+                            position: "sticky", top: 0, background: "var(--background-glass)", backdropFilter: "blur(12px)", zIndex: 10,
+                            padding: "1.25rem 1.5rem", borderBottom: "1px solid var(--card-border)",
                             display: "flex", justifyContent: "space-between", alignItems: "center"
                         }}>
-                            <h2 style={{ fontSize: "1.25rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                            <h2 style={{ fontSize: "1.125rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
@@ -589,103 +626,159 @@ export default function DashboardPage() {
 
                         <div style={{ padding: "1.5rem" }}>
                             {/* User Info */}
-                            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1.5rem", padding: "1rem", background: "var(--accent-soft)", borderRadius: "12px", border: "1px solid var(--card-border)" }}>
                                 <div>
-                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Email Address</div>
-                                    <div style={{ fontSize: "1rem", fontWeight: 500 }}>{user.email}</div>
+                                    <div style={{ fontSize: "0.6875rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Email Address</div>
+                                    <div style={{ fontSize: "0.9375rem", fontWeight: 500 }}>{user.email}</div>
                                 </div>
+                                <div style={{ height: "1px", background: "var(--card-border)", width: "100%" }} />
                                 <div>
-                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Membership Date</div>
-                                    <div style={{ fontSize: "1rem", fontWeight: 500 }}>
-                                        {new Date(user.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                    <div style={{ fontSize: "0.6875rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Membership Date</div>
+                                    <div style={{ fontSize: "0.9375rem", fontWeight: 500 }}>
+                                        {new Date(user.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
                                     </div>
                                 </div>
                             </div>
 
                             {/* Password Change */}
-                            <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "2rem", marginBottom: "2rem" }}>
-                                <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-                                    Change Password
+                            <div style={{ marginBottom: "2rem" }}>
+                                <h3 style={{ fontSize: "0.9375rem", fontWeight: 600, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem", color: "var(--foreground)" }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                                    Security Settings
                                 </h3>
 
-                                <form onSubmit={handleChangePassword} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                                    <div>
-                                        <input
-                                            type="password"
-                                            placeholder="Current Password"
-                                            value={currentPassword}
-                                            onChange={(e) => setCurrentPassword(e.target.value)}
-                                            required
-                                            style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.875rem", outline: "none", transition: "all 0.2s" }}
-                                        />
-                                    </div>
-                                    <div>
-                                        <input
-                                            type="password"
-                                            placeholder="New Password (Min 6 characters)"
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            required
-                                            minLength={6}
-                                            style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.875rem", outline: "none", transition: "all 0.2s" }}
-                                        />
-                                    </div>
-
-                                    {passwordMessage.text && (
-                                        <div style={{ fontSize: "0.8125rem", color: passwordMessage.type === "error" ? "var(--error)" : "var(--success)", padding: "0.5rem", background: passwordMessage.type === "error" ? "rgba(239, 68, 68, 0.1)" : "rgba(52, 211, 153, 0.1)", borderRadius: "6px" }}>
-                                            {passwordMessage.text}
+                                {!isCurrentPasswordVerified ? (
+                                    <form onSubmit={handleVerifyCurrentPassword} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                                        <div>
+                                            <input
+                                                type="password"
+                                                placeholder="Enter Current Password"
+                                                value={currentPassword}
+                                                onChange={(e) => {
+                                                    setCurrentPassword(e.target.value);
+                                                    setPasswordMessage({ type: "", text: "" });
+                                                }}
+                                                required
+                                                style={{ width: "100%", padding: "0.6rem 0.8rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.8125rem", outline: "none", transition: "all 0.2s" }}
+                                                autoComplete="current-password"
+                                            />
                                         </div>
-                                    )}
 
-                                    <button
-                                        type="submit"
-                                        disabled={isPasswordChanging}
-                                        className="btn btn-primary"
-                                        style={{ padding: "0.75rem", fontSize: "0.875rem", opacity: isPasswordChanging ? 0.7 : 1 }}
-                                    >
-                                        {isPasswordChanging ? "Updating..." : "Update Password"}
-                                    </button>
-                                </form>
+                                        {passwordMessage.text && (
+                                            <div style={{ fontSize: "0.75rem", color: passwordMessage.type === "error" ? "var(--error)" : "var(--success)" }}>
+                                                {passwordMessage.text}
+                                            </div>
+                                        )}
+
+                                        <button
+                                            type="submit"
+                                            disabled={isVerifyingPassword}
+                                            className="btn btn-secondary"
+                                            style={{ padding: "0.6rem", fontSize: "0.8125rem", opacity: isVerifyingPassword ? 0.7 : 1, width: "100%", display: "flex", justifyContent: "center" }}
+                                        >
+                                            {isVerifyingPassword ? "Verifying..." : "Change Password"}
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={handleChangePassword} style={{ display: "flex", flexDirection: "column", gap: "0.75rem", animation: "fadeIn 0.3s ease" }}>
+                                        <div style={{ fontSize: "0.75rem", color: "var(--success)", display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            Identity verified. Enter new password.
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="password"
+                                                placeholder="New Password (Min 6 chars)"
+                                                value={newPassword}
+                                                onChange={(e) => setNewPassword(e.target.value)}
+                                                required
+                                                minLength={6}
+                                                style={{ width: "100%", padding: "0.6rem 0.8rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.8125rem", outline: "none", transition: "all 0.2s" }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="password"
+                                                placeholder="Confirm New Password"
+                                                value={confirmNewPassword}
+                                                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                                required
+                                                minLength={6}
+                                                style={{ width: "100%", padding: "0.6rem 0.8rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.8125rem", outline: "none", transition: "all 0.2s" }}
+                                            />
+                                        </div>
+
+                                        {passwordMessage.text && (
+                                            <div style={{ fontSize: "0.75rem", color: passwordMessage.type === "error" ? "var(--error)" : "var(--success)" }}>
+                                                {passwordMessage.text}
+                                            </div>
+                                        )}
+
+                                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsCurrentPasswordVerified(false);
+                                                    setCurrentPassword("");
+                                                    setNewPassword("");
+                                                    setConfirmNewPassword("");
+                                                    setPasswordMessage({ type: "", text: "" });
+                                                }}
+                                                className="btn btn-secondary"
+                                                style={{ padding: "0.6rem", fontSize: "0.8125rem", flex: 1 }}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                disabled={isPasswordChanging}
+                                                className="btn btn-primary"
+                                                style={{ padding: "0.6rem", fontSize: "0.8125rem", opacity: isPasswordChanging ? 0.7 : 1, flex: 2 }}
+                                            >
+                                                {isPasswordChanging ? "Saving..." : "Save Selection"}
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
                             </div>
 
                             {/* Danger Zone */}
                             <div style={{
-                                padding: "1.5rem",
+                                padding: "1.25rem",
                                 border: "1px solid rgba(239, 68, 68, 0.3)",
                                 background: "rgba(239, 68, 68, 0.05)",
                                 borderRadius: "12px",
-                                marginTop: "2rem"
+                                marginTop: "1rem"
                             }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                                         <line x1="12" y1="9" x2="12" y2="13" />
                                         <line x1="12" y1="17" x2="12.01" y2="17" />
                                     </svg>
-                                    <h3 style={{ fontSize: "1rem", color: "var(--error)", fontWeight: 700 }}>Danger Zone</h3>
+                                    <h3 style={{ fontSize: "0.875rem", color: "var(--error)", fontWeight: 700 }}>Danger Zone</h3>
                                 </div>
 
-                                <div style={{ fontSize: "0.8125rem", color: "var(--foreground)", lineHeight: "1.5", marginBottom: "1.25rem" }}>
-                                    <p style={{ marginBottom: "0.5rem" }}>This action is permanent and cannot be undone. Your devices, sessions, and current subscription will be permanently deleted. No refunds will be provided.</p>
-                                    <p>To confirm, type <strong style={{ color: "var(--error)" }}>DELETE MY ACCOUNT</strong>.</p>
+                                <div style={{ fontSize: "0.75rem", color: "var(--foreground)", lineHeight: "1.5", marginBottom: "1rem", opacity: 0.8 }}>
+                                    <p style={{ marginBottom: "0.5rem" }}>Permanent deletion. No refunds. Devices and sessions will be permanently deleted.</p>
+                                    <p>Type <strong style={{ color: "var(--error)" }}>DELETE MY ACCOUNT</strong></p>
                                 </div>
 
-                                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
                                     <input
                                         type="text"
                                         placeholder="DELETE MY ACCOUNT"
                                         value={deleteConfirmation}
                                         onChange={(e) => setDeleteConfirmation(e.target.value)}
-                                        style={{ width: "100%", padding: "0.6rem 1rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.875rem", outline: "none", transition: "all 0.2s" }}
+                                        style={{ width: "100%", padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.75rem", outline: "none", transition: "all 0.2s" }}
                                     />
 
                                     <button
                                         onClick={handleDeleteAccount}
                                         disabled={deleteConfirmation !== "DELETE MY ACCOUNT" || isDeleting}
-                                        style={{ padding: "0.6rem 1rem", borderRadius: "8px", fontSize: "0.875rem", fontWeight: 700, border: "none", cursor: deleteConfirmation === "DELETE MY ACCOUNT" && !isDeleting ? "pointer" : "not-allowed", background: deleteConfirmation === "DELETE MY ACCOUNT" ? "var(--error)" : "var(--accent-soft)", color: deleteConfirmation === "DELETE MY ACCOUNT" ? "white" : "var(--foreground-muted)", transition: "all 0.3s" }}
+                                        style={{ padding: "0.6rem 1rem", borderRadius: "8px", fontSize: "0.8125rem", fontWeight: 700, border: "none", cursor: deleteConfirmation === "DELETE MY ACCOUNT" && !isDeleting ? "pointer" : "not-allowed", background: deleteConfirmation === "DELETE MY ACCOUNT" ? "var(--error)" : "var(--accent-soft)", color: deleteConfirmation === "DELETE MY ACCOUNT" ? "white" : "var(--foreground-muted)", transition: "all 0.3s" }}
                                     >
-                                        {isDeleting ? "Deleting..." : "Permanently Delete Account"}
+                                        {isDeleting ? "Deleting..." : "Permanently Delete"}
                                     </button>
                                 </div>
                             </div>
