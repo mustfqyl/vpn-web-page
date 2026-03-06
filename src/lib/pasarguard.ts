@@ -36,6 +36,7 @@ async function getAdminToken(): Promise<string> {
 
         const res = await fetch(`${PASARGUARD_URL}/api/admin/token`, {
             method: 'POST',
+            cache: 'no-store',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData.toString()
         })
@@ -65,6 +66,7 @@ export async function apiRequest(path: string, options: RequestInit = {}): Promi
 
     const res = await fetch(`${PASARGUARD_URL}${path}`, {
         ...options,
+        cache: 'no-store',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,

@@ -80,7 +80,27 @@ export async function GET() {
             }
         }
 
-        return NextResponse.json({ nodes, protocols, system })
+        let debugInfo: Record<string, unknown> | null = null;
+        if (nodes.length === 0) {
+            debugInfo = {
+                url: PASARGUARD_URL,
+                nodesStatus: nodesRes.status,
+                inboundsStatus: inboundsRes.status,
+                systemStatus: systemRes.status,
+                nodesRejection: nodesRes.status === 'rejected' ? String(nodesRes.reason) : null,
+                nodesOk: nodesRes.status === 'fulfilled' ? nodesRes.value.ok : false,
+                nodesHttpStatus: nodesRes.status === 'fulfilled' ? nodesRes.value.status : null,
+            };
+            if (nodesRes.status === 'fulfilled' && !nodesRes.value.ok) {
+                try {
+                    debugInfo.nodesText = await nodesRes.value.text();
+                } catch {
+                    // Ignore text parsing errors
+                }
+            }
+        }
+
+        return NextResponse.json({ nodes, protocols, system, debugInfo })
     } catch (error) {
         console.error('Server status error:', error)
         return NextResponse.json({ error: 'Failed to fetch server status' }, { status: 500 })

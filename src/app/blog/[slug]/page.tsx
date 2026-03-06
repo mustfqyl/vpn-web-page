@@ -139,22 +139,21 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 <div className="blog-content">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         components={{
-                            h1: ({ node, ...props }) => <h1 style={{ fontSize: "2.5rem", fontWeight: 700, marginBottom: "2rem", color: "var(--foreground)" }} {...props} />,
-                            h2: ({ node, ...props }) => <h2 style={{ fontSize: "2rem", fontWeight: 600, marginBottom: "1.5rem", marginTop: "3rem", color: "var(--foreground)" }} {...props} />,
-                            h3: ({ node, ...props }) => <h3 style={{ fontSize: "1.5rem", fontWeight: 600, marginTop: "2.5rem", marginBottom: "1rem", color: "var(--foreground)" }} {...props} />,
-                            h4: ({ node, ...props }) => <h4 style={{ fontSize: "1.25rem", fontWeight: 600, marginTop: "2rem", marginBottom: "1rem", color: "var(--foreground)" }} {...props} />,
-                            p: ({ node, ...props }) => <p style={{ marginBottom: "1.5rem", lineHeight: "1.8", color: "var(--foreground-muted)", fontSize: "1.125rem" }} {...props} />,
-                            ul: ({ node, ...props }) => <ul style={{ marginBottom: "2rem", listStyle: "disc", paddingLeft: "1.5rem", color: "var(--foreground-muted)" }} {...props} />,
-                            ol: ({ node, ...props }) => <ol style={{ marginBottom: "2rem", listStyle: "decimal", paddingLeft: "1.5rem", color: "var(--foreground-muted)" }} {...props} />,
-                            li: ({ node, ...props }) => <li style={{ marginBottom: "0.75rem", fontSize: "1.125rem" }} {...props} />,
-                            strong: ({ node, ...props }) => <strong style={{ color: "var(--foreground)", fontWeight: 700 }} {...props} />,
-                            em: ({ node, ...props }) => <em style={{ fontStyle: "italic", color: "var(--foreground-muted)" }} {...props} />,
-                            a: ({ node, ...props }) => <a style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: "4px" }} {...props} />,
-                            blockquote: ({ node, ...props }) => <blockquote style={{ borderLeft: "4px solid var(--accent)", paddingLeft: "1.5rem", fontStyle: "italic", marginLeft: 0, marginBottom: "2rem", color: "var(--foreground-subtle)" }} {...props} />,
-                            code: ({ node, ...props }) => <code style={{ background: "var(--card-border)", padding: "0.2rem 0.4rem", borderRadius: "4px", fontSize: "0.9em", fontFamily: "monospace", color: "var(--foreground)" }} {...props} />,
-                            pre: ({ node, ...props }) => <pre style={{ background: "var(--card-border)", padding: "1rem", borderRadius: "8px", overflowX: "auto", marginBottom: "2rem" }} {...props} />,
+                            h1: ({ ...props }) => <h1 style={{ fontSize: "2.5rem", fontWeight: 700, marginBottom: "2rem", color: "var(--foreground)" }} {...props} />,
+                            h2: ({ ...props }) => <h2 style={{ fontSize: "2rem", fontWeight: 600, marginBottom: "1.5rem", marginTop: "3rem", color: "var(--foreground)" }} {...props} />,
+                            h3: ({ ...props }) => <h3 style={{ fontSize: "1.5rem", fontWeight: 600, marginTop: "2.5rem", marginBottom: "1rem", color: "var(--foreground)" }} {...props} />,
+                            h4: ({ ...props }) => <h4 style={{ fontSize: "1.25rem", fontWeight: 600, marginTop: "2rem", marginBottom: "1rem", color: "var(--foreground)" }} {...props} />,
+                            p: ({ ...props }) => <p style={{ marginBottom: "1.5rem", lineHeight: "1.8", color: "var(--foreground-muted)", fontSize: "1.125rem" }} {...props} />,
+                            ul: ({ ...props }) => <ul style={{ marginBottom: "2rem", listStyle: "disc", paddingLeft: "1.5rem", color: "var(--foreground-muted)" }} {...props} />,
+                            ol: ({ ...props }) => <ol style={{ marginBottom: "2rem", listStyle: "decimal", paddingLeft: "1.5rem", color: "var(--foreground-muted)" }} {...props} />,
+                            li: ({ ...props }) => <li style={{ marginBottom: "0.75rem", fontSize: "1.125rem" }} {...props} />,
+                            strong: ({ ...props }) => <strong style={{ color: "var(--foreground)", fontWeight: 700 }} {...props} />,
+                            em: ({ ...props }) => <em style={{ fontStyle: "italic", color: "var(--foreground-muted)" }} {...props} />,
+                            a: ({ ...props }) => <a style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: "4px" }} {...props} />,
+                            blockquote: ({ ...props }) => <blockquote style={{ borderLeft: "4px solid var(--accent)", paddingLeft: "1.5rem", fontStyle: "italic", marginLeft: 0, marginBottom: "2rem", color: "var(--foreground-subtle)" }} {...props} />,
+                            code: ({ ...props }) => <code style={{ background: "var(--card-border)", padding: "0.2rem 0.4rem", borderRadius: "4px", fontSize: "0.9em", fontFamily: "monospace", color: "var(--foreground)" }} {...props} />,
+                            pre: ({ ...props }) => <pre style={{ background: "var(--card-border)", padding: "1rem", borderRadius: "8px", overflowX: "auto", marginBottom: "2rem" }} {...props} />,
                         }}
                     >
                         {post.content}
