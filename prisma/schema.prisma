@@ -1,0 +1,79 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String         @id @default(uuid())
+  email            String         @unique
+  password         String
+  role             Role           @default(USER)
+  pasarguardId     String?        @map("pasarguard_id")
+  pasarguardSubUrl String?        @map("pasarguard_sub_url")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  devices          Device[]
+  loginCodes       LoginCode[]
+  subscriptions    Subscription[]
+
+  @@map("users")
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  deviceName  String   @map("device_name")
+  deviceToken String   @unique @map("device_token")
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("devices")
+}
+
+model Subscription {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  planName  String   @map("plan_name")
+  expiresAt DateTime @map("expires_at")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model Node {
+  id        String   @id @default(uuid())
+  country   String
+  city      String
+  hostname  String
+  protocol  String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("nodes")
+}
+
+model LoginCode {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  code      String
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("login_codes")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
