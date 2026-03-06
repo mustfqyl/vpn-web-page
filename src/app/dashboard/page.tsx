@@ -517,7 +517,7 @@ export default function DashboardPage() {
                                     DEBUG OUTPUT: {JSON.stringify(serverStatus)}
                                 </div>
 
-                                {serverStatus?.nodes?.length ? (
+                                {serverStatus && Array.isArray(serverStatus.nodes) && serverStatus.nodes.length > 0 ? (
                                     serverStatus.nodes.map((node, i) => (
                                         <div key={i} onClick={() => setSelectedNode(node)} style={{
                                             display: "flex",
@@ -568,7 +568,7 @@ export default function DashboardPage() {
                                     ))
                                 ) : (
                                     <div style={{ padding: "1rem", textAlign: "center", color: "var(--foreground-muted)", fontSize: "0.8125rem" }}>
-                                        {serverStatus ? "No nodes found" : "Loading nodes..."}
+                                        {serverStatus ? "No nodes found in array." : "Loading nodes..."}
                                     </div>
                                 )}
 
