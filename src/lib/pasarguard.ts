@@ -60,7 +60,7 @@ async function getAdminToken(): Promise<string> {
 /**
  * Helper to make authenticated requests to PasarGuard Panel API
  */
-async function apiRequest(path: string, options: RequestInit = {}): Promise<Response> {
+export async function apiRequest(path: string, options: RequestInit = {}): Promise<Response> {
     const token = await getAdminToken()
 
     const res = await fetch(`${PASARGUARD_URL}${path}`, {

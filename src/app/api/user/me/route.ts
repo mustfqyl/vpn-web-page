@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+import { verifyToken } from '@/lib/auth'
 import { pasarguardService } from '@/lib/pasarguard'
 
 export const dynamic = 'force-dynamic'
@@ -15,7 +15,7 @@ export async function GET() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        const decoded = jwt.decode(token) as { userId: string } | null
+        const decoded = verifyToken(token) as { userId: string } | null
 
         if (!decoded || !decoded.userId) {
             return NextResponse.json({ error: 'Invalid token' }, { status: 401 })

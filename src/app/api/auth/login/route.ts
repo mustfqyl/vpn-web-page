@@ -66,7 +66,6 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ user: userWithoutPassword, token }, { status: 200 })
     } catch (error) {
-        console.error('Login error:', error)
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.issues }, { status: 400 })
         }

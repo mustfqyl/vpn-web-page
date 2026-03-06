@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
-import { pasarguardService } from '@/lib/pasarguard'
+import { verifyToken } from '@/lib/auth'
+import { pasarguardService, apiRequest } from '@/lib/pasarguard'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,7 +15,7 @@ export async function POST() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        const decoded = jwt.decode(token) as { userId: string } | null
+        const decoded = verifyToken(token) as { userId: string } | null
 
         if (!decoded || !decoded.userId) {
             return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
@@ -56,10 +56,7 @@ export async function POST() {
             try {
                 const newExpire = Math.floor(expiresAt.getTime() / 1000)
                 // Fetch group ID for 'user' group from PasarGuard
-                const groupsRes = await fetch(
-                    `${process.env.PASARGUARD_API_URL?.replace(/\/$/, '')}/api/groups`,
-                    { headers: { 'Content-Type': 'application/json' } }
-                )
+                const groupsRes = await apiRequest('/api/groups')
                 let groupIds: number[] | undefined
                 if (groupsRes.ok) {
                     const gData = await groupsRes.json()
@@ -76,7 +73,7 @@ export async function POST() {
             }
         }
 
-        const existingSub = user.subscriptions.find((s: any) => s.active)
+        const existingSub = user.subscriptions.find(s => s.active)
 
         if (existingSub) {
             const updatedSub = await prisma.subscription.update({

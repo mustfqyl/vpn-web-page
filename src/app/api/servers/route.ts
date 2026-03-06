@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+import { verifyToken } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,8 +31,8 @@ export async function GET(request: Request) {
         if (cookieToken) {
             // User Auth
             try {
-                // simplified verify
-                if (jwt.decode(cookieToken)) isAuthenticated = true
+                // verified decode
+                if (verifyToken(cookieToken)) isAuthenticated = true
             } catch { }
         }
 

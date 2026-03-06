@@ -4,39 +4,11 @@ import net from 'net'
 export const dynamic = 'force-dynamic'
 
 const PASARGUARD_URL = (process.env.PASARGUARD_API_URL || 'https://panel.example.com').replace(/\/$/, '')
-const USERNAME = process.env.PASARGUARD_ADMIN_USERNAME || 'admin'
-const PASSWORD = process.env.PASARGUARD_ADMIN_PASSWORD || 'password'
 
-let cachedToken: string | null = null
-let tokenExpiry: number = 0
-
-async function getToken(): Promise<string> {
-    if (cachedToken && Date.now() < tokenExpiry) return cachedToken
-
-    const formData = new URLSearchParams()
-    formData.append('username', USERNAME)
-    formData.append('password', PASSWORD)
-    formData.append('grant_type', 'password')
-
-    const res = await fetch(`${PASARGUARD_URL}/api/admin/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formData.toString()
-    })
-
-    if (!res.ok) throw new Error('Auth failed')
-    const data = await res.json()
-    cachedToken = data.access_token
-    tokenExpiry = Date.now() + 12 * 3600 * 1000
-    return cachedToken!
-}
+import { apiRequest } from '@/lib/pasarguard'
 
 async function apiGet(path: string) {
-    const token = await getToken()
-    return fetch(`${PASARGUARD_URL}${path}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        signal: AbortSignal.timeout(5000)
-    })
+    return apiRequest(path, { signal: AbortSignal.timeout(5000) })
 }
 
 function tcpPing(host: string, port: number, timeout = 3000): Promise<number> {

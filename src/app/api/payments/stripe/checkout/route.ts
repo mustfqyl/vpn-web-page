@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCheckoutSession } from "@/lib/stripe";
 
+import { cookies } from "next/headers";
+import { verifyToken } from "@/lib/auth";
+
 export async function POST(request: NextRequest) {
     try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+
+        if (!token || !verifyToken(token)) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { customerId, customerEmail } = await request.json();
 
         if (!customerId || !customerEmail) {
