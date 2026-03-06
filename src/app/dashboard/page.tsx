@@ -513,37 +513,8 @@ export default function DashboardPage() {
 
                             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                                 {/* Nodes */}
-                                <div style={{ background: "rgba(0,0,0,0.8)", color: "lime", padding: "10px", fontSize: "10px", overflow: "auto", fontFamily: "monospace", maxHeight: "150px" }}>
-                                    TYPE: {typeof serverStatus} <br />
-                                    NODES TYPE: {typeof serverStatus?.nodes} <br />
-                                    IS_ARRAY: {String(Array.isArray(serverStatus?.nodes))} <br />
-                                    LENGTH: {serverStatus?.nodes?.length} <br />
-                                    DEBUG FINAL: {JSON.stringify(serverStatus)}
-                                </div>
-
-                                {(() => {
-                                    if (!serverStatus) return <div style={{ padding: "1rem", textAlign: "center", color: "var(--foreground-muted)", fontSize: "0.8125rem" }}>Loading nodes...</div>;
-
-                                    let nodeArray: any[] = [];
-                                    try {
-                                        if (Array.isArray(serverStatus.nodes)) {
-                                            nodeArray = serverStatus.nodes;
-                                        } else if (typeof serverStatus.nodes === 'string') {
-                                            nodeArray = JSON.parse(serverStatus.nodes);
-                                        } else if (serverStatus.nodes) {
-                                            nodeArray = Array.from(serverStatus.nodes as any);
-                                        }
-                                    } catch (e) {
-                                        return <div style={{ color: 'red' }}>Error parsing nodes.</div>;
-                                    }
-
-                                    if (!nodeArray || nodeArray.length === 0) {
-                                        return <div style={{ padding: "1rem", textAlign: "center", color: "var(--foreground-muted)", fontSize: "0.8125rem" }}>
-                                            No nodes found in array. (Length: {nodeArray?.length})
-                                        </div>;
-                                    }
-
-                                    return nodeArray.map((node: any, i: number) => (
+                                {serverStatus && Array.isArray(serverStatus.nodes) && serverStatus.nodes.length > 0 ? (
+                                    serverStatus.nodes.map((node: any, i: number) => (
                                         <div key={i} onClick={() => setSelectedNode(node)} style={{
                                             display: "flex",
                                             alignItems: "center",
@@ -591,8 +562,12 @@ export default function DashboardPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                    ));
-                                })()}
+                                    ))
+                                ) : (
+                                    <div style={{ padding: "1rem", textAlign: "center", color: "var(--foreground-muted)", fontSize: "0.8125rem" }}>
+                                        {serverStatus ? "No nodes found." : "Loading nodes..."}
+                                    </div>
+                                )}
 
                                 <div style={{ height: "1px", background: "var(--card-border)", opacity: 0.5 }} />
                             </div>
