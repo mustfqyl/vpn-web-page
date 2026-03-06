@@ -111,16 +111,17 @@ export default function DashboardPage() {
 
         const fetchAllData = async (isInitial = false) => {
             try {
-                const res = await fetch("/api/user/me");
+                const res = await fetch("/api/user/me", { cache: "no-store", headers: { 'Cache-Control': 'no-cache' } });
                 if (res.ok) {
                     const data = await res.json();
                     if (isMounted) setUser(data);
 
                     // Fetch Server Status in parallel
                     try {
-                        const sRes = await fetch("/api/server/status");
+                        const sRes = await fetch("/api/server/status", { cache: "no-store", headers: { 'Cache-Control': 'no-cache' } });
                         if (sRes.ok && isMounted) {
-                            setServerStatus(await sRes.json());
+                            const statusData = await sRes.json();
+                            setServerStatus(statusData);
                         }
                     } catch (e) {
                         console.error("Failed to load server status", e);
@@ -512,7 +513,7 @@ export default function DashboardPage() {
 
                             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                                 {/* Nodes */}
-                                {serverStatus?.nodes && serverStatus.nodes.length > 0 ? (
+                                {serverStatus?.nodes?.length ? (
                                     serverStatus.nodes.map((node, i) => (
                                         <div key={i} onClick={() => setSelectedNode(node)} style={{
                                             display: "flex",
