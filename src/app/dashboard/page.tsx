@@ -513,6 +513,10 @@ export default function DashboardPage() {
 
                             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                                 {/* Nodes */}
+                                <div style={{ background: "rgba(0,0,0,0.8)", color: "lime", padding: "10px", fontSize: "10px", overflow: "auto", fontFamily: "monospace", maxHeight: "150px" }}>
+                                    DEBUG OUTPUT: {JSON.stringify(serverStatus)}
+                                </div>
+
                                 {serverStatus?.nodes?.length ? (
                                     serverStatus.nodes.map((node, i) => (
                                         <div key={i} onClick={() => setSelectedNode(node)} style={{
