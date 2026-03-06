@@ -64,6 +64,14 @@ export default function DashboardPage() {
     const [copySuccess, setCopySuccess] = useState(false);
     const [deleteConfirmation, setDeleteConfirmation] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
+
+    // Profile Modal States
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [isPasswordChanging, setIsPasswordChanging] = useState(false);
+    const [passwordMessage, setPasswordMessage] = useState({ type: "", text: "" });
+
     const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
@@ -175,6 +183,41 @@ export default function DashboardPage() {
         }
     };
 
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setPasswordMessage({ type: "", text: "" });
+
+        if (newPassword.length < 6) {
+            setPasswordMessage({ type: "error", text: "Yeni şifre en az 6 karakter olmalıdır." });
+            return;
+        }
+
+        setIsPasswordChanging(true);
+
+        try {
+            const res = await fetch("/api/user/password", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setPasswordMessage({ type: "success", text: "Şifreniz başarıyla değiştirildi." });
+                setCurrentPassword("");
+                setNewPassword("");
+            } else {
+                setPasswordMessage({ type: "error", text: data.error || "Şifre değiştirilemedi." });
+            }
+        } catch (error) {
+            console.error(error);
+            setPasswordMessage({ type: "error", text: "Bağlantı hatası oluştu." });
+        } finally {
+            setIsPasswordChanging(false);
+        }
+    };
+
     if (loading) {
         return (
             <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -248,7 +291,29 @@ export default function DashboardPage() {
                         <div>
                             <h1 style={{ fontSize: "1.75rem" }}>Dashboard</h1>
                         </div>
-                        <p style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>{user.email}</p>
+                        <button
+                            onClick={() => setIsProfileOpen(true)}
+                            className="btn btn-secondary"
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                fontSize: "0.8125rem",
+                                padding: "0.5rem 1rem",
+                                background: "var(--background-glass)",
+                                border: "1px solid var(--card-border)",
+                                borderRadius: "8px",
+                                color: "var(--foreground)",
+                                cursor: "pointer",
+                                transition: "all 0.2s"
+                            }}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                            Profil Ayarları
+                        </button>
                     </div>
 
                     <div className="card" style={{ padding: "1.5rem", marginBottom: "1.5rem" }}>
@@ -480,73 +545,154 @@ export default function DashboardPage() {
                         </Link>
                     </div>
 
-                    {/* Danger Zone */}
-                    <div className="card" style={{
-                        marginTop: "3rem",
-                        padding: "2rem",
-                        border: "1px solid rgba(239, 68, 68, 0.3)",
-                        background: "rgba(239, 68, 68, 0.05)",
-                        borderRadius: "16px"
-                    }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                                <line x1="12" y1="9" x2="12" y2="13" />
-                                <line x1="12" y1="17" x2="12.01" y2="17" />
-                            </svg>
-                            <h3 style={{ fontSize: "1.25rem", color: "var(--error)", fontWeight: 700 }}>Tehlikeli Bölge</h3>
-                        </div>
-
-                        <div style={{ fontSize: "0.875rem", color: "var(--foreground)", lineHeight: "1.6", marginBottom: "1.5rem" }}>
-                            <p style={{ marginBottom: "0.5rem" }}>Hesabınızı kalıcı olarak silmek üzeresiniz. Lütfen aşağıdaki uyarıları dikkatle okuyunuz:</p>
-                            <ul style={{ paddingLeft: "1.5rem", color: "var(--foreground-muted)", marginBottom: "1rem" }}>
-                                <li><strong>Tüm verileriniz (cihazlar, abonelik geçmişi ve hesabınız) geri dönüşü olmayacak şekilde tamamen yok edilecektir.</strong></li>
-                                <li><strong>Ödediğiniz ücret ile almış olduğunuz aktif aboneliğin kalan süresi anında iptal edilecek ve kesinlikle <u>ücret iadesi yapılmayacaktır</u>.</strong></li>
-                            </ul>
-                            <p>Bu işlemin geri dönüşü yoktur. Devam etmek istediğinize eminseniz, lütfen aşağıdaki alana <strong style={{ color: "var(--error)" }}>HESABIMI SİL</strong> yazınız.</p>
-                        </div>
-
-                        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}>
-                            <input
-                                type="text"
-                                placeholder="HESABIMI SİL"
-                                value={deleteConfirmation}
-                                onChange={(e) => setDeleteConfirmation(e.target.value)}
-                                style={{
-                                    width: "100%",
-                                    padding: "0.75rem 1rem",
-                                    borderRadius: "8px",
-                                    border: "1px solid var(--card-border)",
-                                    background: "var(--background)",
-                                    color: "var(--foreground)",
-                                    fontSize: "0.875rem",
-                                    outline: "none",
-                                    transition: "all 0.2s"
-                                }}
-                            />
-
-                            <button
-                                onClick={handleDeleteAccount}
-                                disabled={deleteConfirmation !== "HESABIMI SİL" || isDeleting}
-                                style={{
-                                    padding: "0.75rem 1.5rem",
-                                    borderRadius: "8px",
-                                    fontSize: "0.875rem",
-                                    fontWeight: 700,
-                                    border: "none",
-                                    cursor: deleteConfirmation === "HESABIMI SİL" && !isDeleting ? "pointer" : "not-allowed",
-                                    background: deleteConfirmation === "HESABIMI SİL" ? "var(--error)" : "var(--accent-soft)",
-                                    color: deleteConfirmation === "HESABIMI SİL" ? "white" : "var(--foreground-muted)",
-                                    transition: "all 0.3s"
-                                }}
-                            >
-                                {isDeleting ? "Siliniyor..." : "Hesabımı Kalıcı Olarak Sil"}
-                            </button>
-                        </div>
-                    </div>
-
                 </div>
             </main>
+
+            {/* Profile Settings Modal */}
+            {isProfileOpen && (
+                <div onClick={() => setIsProfileOpen(false)} style={{
+                    position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+                    background: "rgba(0,0,0,0.6)",
+                    backdropFilter: "blur(8px)",
+                    display: "grid", placeItems: "center",
+                    zIndex: 100,
+                    animation: "fadeIn 0.2s ease",
+                    padding: "1rem"
+                }}>
+                    <div onClick={(e) => e.stopPropagation()} style={{
+                        background: "var(--background)",
+                        border: "1px solid var(--card-border)",
+                        borderRadius: "16px",
+                        width: "100%",
+                        maxWidth: "500px",
+                        maxHeight: "90vh",
+                        overflowY: "auto",
+                        animation: "fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                        boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
+                    }}>
+                        <div style={{
+                            position: "sticky", top: 0, background: "var(--background)", zIndex: 10,
+                            padding: "1.5rem", borderBottom: "1px solid var(--card-border)",
+                            display: "flex", justifyContent: "space-between", alignItems: "center"
+                        }}>
+                            <h2 style={{ fontSize: "1.25rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                Profil Ayarları
+                            </h2>
+                            <button onClick={() => setIsProfileOpen(false)} style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: "0.5rem", borderRadius: "8px", transition: "background 0.2s" }} onMouseOver={e => e.currentTarget.style.background = 'var(--accent-soft)'} onMouseOut={e => e.currentTarget.style.background = 'none'}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                            </button>
+                        </div>
+
+                        <div style={{ padding: "1.5rem" }}>
+                            {/* User Info */}
+                            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
+                                <div>
+                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>E-Posta Adresi</div>
+                                    <div style={{ fontSize: "1rem", fontWeight: 500 }}>{user.email}</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, marginBottom: "0.25rem" }}>Üyelik Tarihi</div>
+                                    <div style={{ fontSize: "1rem", fontWeight: 500 }}>
+                                        {new Date(user.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Password Change */}
+                            <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "2rem", marginBottom: "2rem" }}>
+                                <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                                    Şifre Değiştir
+                                </h3>
+
+                                <form onSubmit={handleChangePassword} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                                    <div>
+                                        <input
+                                            type="password"
+                                            placeholder="Mevcut Şifre"
+                                            value={currentPassword}
+                                            onChange={(e) => setCurrentPassword(e.target.value)}
+                                            required
+                                            style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.875rem", outline: "none", transition: "all 0.2s" }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="password"
+                                            placeholder="Yeni Şifre (En az 6 karakter)"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            required
+                                            minLength={6}
+                                            style={{ width: "100%", padding: "0.75rem 1rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.875rem", outline: "none", transition: "all 0.2s" }}
+                                        />
+                                    </div>
+
+                                    {passwordMessage.text && (
+                                        <div style={{ fontSize: "0.8125rem", color: passwordMessage.type === "error" ? "var(--error)" : "var(--success)", padding: "0.5rem", background: passwordMessage.type === "error" ? "rgba(239, 68, 68, 0.1)" : "rgba(52, 211, 153, 0.1)", borderRadius: "6px" }}>
+                                            {passwordMessage.text}
+                                        </div>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={isPasswordChanging}
+                                        className="btn btn-primary"
+                                        style={{ padding: "0.75rem", fontSize: "0.875rem", opacity: isPasswordChanging ? 0.7 : 1 }}
+                                    >
+                                        {isPasswordChanging ? "Güncelleniyor..." : "Şifreyi Güncelle"}
+                                    </button>
+                                </form>
+                            </div>
+
+                            {/* Danger Zone */}
+                            <div style={{
+                                padding: "1.5rem",
+                                border: "1px solid rgba(239, 68, 68, 0.3)",
+                                background: "rgba(239, 68, 68, 0.05)",
+                                borderRadius: "12px",
+                                marginTop: "2rem"
+                            }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                        <line x1="12" y1="9" x2="12" y2="13" />
+                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                    </svg>
+                                    <h3 style={{ fontSize: "1rem", color: "var(--error)", fontWeight: 700 }}>Tehlikeli Bölge</h3>
+                                </div>
+
+                                <div style={{ fontSize: "0.8125rem", color: "var(--foreground)", lineHeight: "1.5", marginBottom: "1.25rem" }}>
+                                    <p style={{ marginBottom: "0.5rem" }}>Bu işlem kalıcıdır ve geri alınamaz. Cihazlarınız, oturumlarınız ve mevcut aboneliğiniz temelli silinir. İade yapılmaz.</p>
+                                    <p>Onaylamak için <strong style={{ color: "var(--error)" }}>HESABIMI SİL</strong> yazın.</p>
+                                </div>
+
+                                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                                    <input
+                                        type="text"
+                                        placeholder="HESABIMI SİL"
+                                        value={deleteConfirmation}
+                                        onChange={(e) => setDeleteConfirmation(e.target.value)}
+                                        style={{ width: "100%", padding: "0.6rem 1rem", borderRadius: "8px", border: "1px solid var(--card-border)", background: "var(--background)", color: "var(--foreground)", fontSize: "0.875rem", outline: "none", transition: "all 0.2s" }}
+                                    />
+
+                                    <button
+                                        onClick={handleDeleteAccount}
+                                        disabled={deleteConfirmation !== "HESABIMI SİL" || isDeleting}
+                                        style={{ padding: "0.6rem 1rem", borderRadius: "8px", fontSize: "0.875rem", fontWeight: 700, border: "none", cursor: deleteConfirmation === "HESABIMI SİL" && !isDeleting ? "pointer" : "not-allowed", background: deleteConfirmation === "HESABIMI SİL" ? "var(--error)" : "var(--accent-soft)", color: deleteConfirmation === "HESABIMI SİL" ? "white" : "var(--foreground-muted)", transition: "all 0.3s" }}
+                                    >
+                                        {isDeleting ? "Siliniyor..." : "Hesabımı Kalıcı Olarak Sil"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Node Detail Popup */}
             {selectedNode && (
