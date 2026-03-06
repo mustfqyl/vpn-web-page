@@ -30,7 +30,7 @@ export async function GET() {
 
         if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-        const activeSub = user.subscriptions.find((sub: { active: boolean; expiresAt: Date }) => sub.active && sub.expiresAt > new Date())
+        const activeSub = user.subscriptions.find(sub => sub.active && sub.expiresAt > new Date())
 
         // Fetch live data from PasarGuard
         let usedTrafficGB = 0
@@ -130,7 +130,7 @@ export async function GET() {
                 name: `Active Connection (Gateway)`,
                 lastSeen: new Date().toISOString(),
                 revoked: false
-            })) : user.devices.map((d: { id: string; deviceName: string; createdAt: Date; revoked: boolean }) => ({
+            })) : user.devices.map(d => ({
                 id: d.id,
                 name: d.deviceName,
                 lastSeen: d.createdAt.toISOString(),

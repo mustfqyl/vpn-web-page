@@ -31,7 +31,7 @@ export async function GET(request: Request) {
         }
 
         // Check active subscription
-        const activeSub = device.user.subscriptions.find((sub: { active: boolean; expiresAt: Date }) => sub.active && sub.expiresAt > new Date())
+        const activeSub = device.user.subscriptions.find(sub => sub.active && sub.expiresAt > new Date())
 
         if (!activeSub) {
             return NextResponse.json({ error: 'No active subscription' }, { status: 403 })

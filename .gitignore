@@ -1,6 +1,8 @@
 node_modules
-.next
-.env
+.next/
 .DS_Store
-/src/generated/prisma
 tsconfig.tsbuildinfo
+# Keep environment variables out of version control
+.env
+
+/src/generated/prisma

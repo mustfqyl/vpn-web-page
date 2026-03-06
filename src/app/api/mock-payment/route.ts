@@ -76,7 +76,7 @@ export async function POST() {
             }
         }
 
-        const existingSub = user.subscriptions.find((s: { active: boolean }) => s.active)
+        const existingSub = user.subscriptions.find(s => s.active)
 
         if (existingSub) {
             const updatedSub = await prisma.subscription.update({
